@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="PT-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Play</title>
+  </head>
+  <body>
+    <canvas id="folha" width="600" height="500"></canvas>
+
+    <script>
+      window.onload = function () {
+        setInterval(executar, 1000 / 30);
+      };
+      // variaveis que estavam dentro da funcao 'executar'
+      var desenho = document.getElementById("folha");
+      var area = desenho.getContext("2d"); //config
+
+      var alturaCampo = 500;
+      var larguraCampo = 600;
+      var espessuraRede = 5;
+      var diametro = 10;
+      var espessuraRaquete = 10;
+      var alturaRaquete = 60;
+
+      var efeitoRaquete = 0.3;
+
+      var jogador1 = 30;
+      var jogador2 = 300;
+      var posicaoX = (posicaoY = 10);
+      var velocidadePx = (velocidadePy = 5);
+      var velocidadeJogador2 = 10;
+    
+
+      var pontuacaoJogador2 = (pontuacaoJogador1 = 0);
+
+      folha.addEventListener('mousemove', function (e) {
+        jogador1 = e.clientY - alturaRaquete / 2;
+      });
+
+      function executar() {
+        // dimensoes
+        area.fillStyle = "#286047";
+        area.fillRect(0, 0, larguraCampo, alturaCampo);
+        area.fillStyle = "#80ff80";
+        area.fillRect(35, 35, 530, 420);
+
+        // elementos
+        area.fillStyle = "#ffffff";
+        area.fillRect(300, 0, espessuraRede, alturaCampo); // barra
+        area.fillRect(0, jogador1, espessuraRaquete, alturaRaquete); // raquete1
+        area.fillRect(590, jogador2, espessuraRaquete, alturaRaquete); // raquete2
+
+        area.fillRect(
+          posicaoX - diametro / 2,
+          posicaoY - diametro / 2,
+          diametro,
+          diametro ); // bola
+
+        area.fillText("Player 1 - " + pontuacaoJogador1 + " pontos", 100, 100);
+        area.fillText("Player 2 - " + pontuacaoJogador2 + " pontos", 400, 100);
+
+        posicaoX = posicaoX + velocidadePx;
+        posicaoY = posicaoY + velocidadePy;
+
+        // Limite das laterais //
+        if (posicaoY < 0 && velocidadePy < 0) {
+          velocidadePy = -velocidadePy;
+        }
+
+        if (posicaoY > alturaCampo && velocidadePy > 0) {
+          velocidadePy = -velocidadePy;
+        }
+
+        if (posicaoX < 0) {
+          if (posicaoY > jogador1 && posicaoY < jogador1 + alturaRaquete) {
+            velocidadePx = -velocidadePx;
+
+            var diferencaY = posicaoY - (jogador1 - alturaRaquete / 2);
+            velocidadePy = diferencaY * efeitoRaquete;
+          } else {
+            pontuacaoJogador2++;
+
+            posicaoX = larguraCampo / 2;
+            posicaoY = alturaCampo / 2;
+            velocidadePx = -velocidadePx;
+            velocidadePy = 3;
+          }
+        }
+
+        if (posicaoX > larguraCampo) {
+          if (posicaoY > jogador2 && posicaoY < jogador2 + alturaRaquete) {
+            velocidadePx = -velocidadePx;
+
+            var diferencaY = posicaoY - (jogador2 + alturaRaquete / 2);
+            velocidadePy = diferencaY * efeitoRaquete;
+          } else {
+            pontuacaoJogador1++;
+
+            posicaoX = larguraCampo / 2;
+            posicaoY = alturaCampo / 2;
+            velocidadePx = -velocidadePx;
+            velocidadePy = 3;
+          }
+        }
+
+        if (jogador2 + alturaRaquete / 2 < posicaoY) {
+            jogador2 = jogador2 + velocidadeJogador2;
+        }
+        else {
+            jogador2 = jogador2 - velocidadeJogador2;
+        }
+
+      }
+    </script>
+  </body>
+</html>
